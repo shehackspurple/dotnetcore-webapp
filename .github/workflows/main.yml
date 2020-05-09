@@ -48,7 +48,6 @@ jobs:
       #    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       # Truffle Hog for Secrets Scan
-      - uses: actions/checkout@master
       - name: trufflehog-actions-scan
         uses: edplato/trufflehog-actions-scan@master
         with:
