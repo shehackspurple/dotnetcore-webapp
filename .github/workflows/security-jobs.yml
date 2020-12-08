@@ -1,4 +1,4 @@
-name: Dependency Check
+name: Security Jobs
 
 on: [push]
 jobs:
@@ -26,7 +26,7 @@ jobs:
         # The directory path specified here is specific to inside the docker container
         Report-Location: /github/workspace/dcReports
         Report-Format: HTML
-        Log-Name: MyLog.txt
+        Log-Name: sca-report.txt
              
     # SUCCESS (to be used with above action)
     - name: Upload report artifacts
@@ -37,7 +37,19 @@ jobs:
         # outside the docker container
         path: ${{ github.workspace }}/dcReports
              
-     
+
+      # Software Composition Analysis (SCA)
+    - name: Snyk
+      uses: snyk/actions/dotnet@master
+      env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Truffle Hog for Secrets Scan
+    - name: trufflehog-actions-scan
+      uses: edplato/trufflehog-actions-scan@master
+      with:
+          scanArguments: "--regex --entropy=False --max_depth=5 --rules /regexes.json" # Add custom options here*
+
      #https://github.com/evanextreme/detect-secrets-action
     - name: Detect Secrets
       uses: evanextreme/detect-secrets-action@1.0.0
